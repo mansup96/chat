@@ -2,15 +2,17 @@
 let connection = new io("http://localhost:3000");
 
 connection.on("server-error", data => {
-	console.log(data)
+  console.log(data);
 });
 
 connection.emit("send-handshake", localStorage.getItem("ID"));
 
-connection.on("set-handshake", data => { localStorage.setItem("ID", data) });
+connection.on("set-handshake", data => {
+  localStorage.setItem("ID", data);
+});
 connection.on("send-messages-history", getHistory);
 
-let chat = document.querySelector('.chat');
+let chat = document.querySelector(".chat");
 
 // let iconEl = document.querySelector('svg')
 // iconEl.addEventListener('mouseenter', () => {
@@ -30,122 +32,134 @@ let chat = document.querySelector('.chat');
 // 	console.log("hueta");
 // });
 
-let modalEl = document.querySelector('.modal');
-let loginInput = document.querySelector('.login');
-let okButton = document.querySelector('.ok');
+let modalEl = document.querySelector(".modal");
+let loginInput = document.querySelector(".login");
+let okButton = document.querySelector(".ok");
 
-if (localStorage.key('ID') === null) {
-	console.log('krasava');
-	modalEl.classList.remove('displayNone')
+if (localStorage.key("ID") === null) {
+  console.log("krasava");
+  modalEl.classList.remove("displayNone");
 }
 
 function modalClose() {
-	if (loginInput.value.length <= 1) {
-		loginInput.removeAttribute('placeholder');
-		loginInput.setAttribute('placeholder', 'ИМЯ, СУКА!')
-	}
-	else if (loginInput.value.length > 0) {
-		modalEl.classList.add('displayNone')
-	}
-	localStorage.setItem('ID', loginInput.value)
+  if (loginInput.value.length <= 1) {
+    loginInput.removeAttribute("placeholder");
+    loginInput.setAttribute("placeholder", "ИМЯ, СУКА!");
+  } else if (loginInput.value.length > 0) {
+    modalEl.classList.add("displayNone");
+  }
+  localStorage.setItem("ID", loginInput.value);
 }
 
-okButton.addEventListener('click', () => {
-	modalClose()
+okButton.addEventListener("click", () => {
+  modalClose();
 });
 
-loginInput.addEventListener('keydown', (event) => {
-	if (event.key === 'Enter') {
-		modalClose()
-	}
+loginInput.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    modalClose();
+  }
 });
 
 function getHistory(array) {
-	array.forEach(item => {
-		createOneMessage(item)
-	});
+  array.forEach(item => {
+    createOneMessage(item);
+  });
 }
 
 function createOneMessage(replica) {
-	createMessage(replica.userId, replica.message, replica.timestamp, isMyMessage(replica.userId));
-	chat.scrollTo({
-		top: chat.scrollHeight + 500,
-		behavior: 'instant'
-	});
-};
-
-function isMyMessage(ID) {
-	let isMyMessage = false
-	if (ID === localStorage.getItem("ID")) {
-		isMyMessage = true
-	}
-	return isMyMessage
+  createMessage(
+    replica.userId,
+    replica.message,
+    replica.timestamp,
+    isMyMessage(replica.userId),
+    replica.imageUrl
+  );
+  chat.scrollTo({
+    top: chat.scrollHeight + 500,
+    behavior: "instant"
+  });
 }
 
-function createMessage(userId, message, timestamp, isMyMessage) {
-	let containerEl = createMessageContainer();
+function isMyMessage(ID) {
+  let isMyMessage = false;
+  if (ID === localStorage.getItem("ID")) {
+    isMyMessage = true;
+  }
+  return isMyMessage;
+}
 
-	let messageEl = document.createElement('div');
-	messageEl.classList.add('message');
+function createMessage(userId, message, timestamp, isMyMessage, imageUrl) {
+  let containerEl = createMessageContainer();
 
-	if (isMyMessage === true) {
-		messageEl.classList.add('outText');
-		containerEl.classList.add('drag-right');
-	}
-	else {
-		messageEl.classList.add('inText');
-	}
+  let messageEl = document.createElement("div");
+  messageEl.classList.add("message");
 
-	let name = document.createElement('div');
-	name.classList.add('name');
-	name.innerText = userId;
+  if (imageUrl) {
+    const image = document.createElement("img");
+    image.src = imageUrl;
+    containerEl.appendChild(image);
+  }
 
-	let textEl = document.createElement('span');
-	textEl.innerText = message;
+  if (isMyMessage === true) {
+    messageEl.classList.add("outText");
+    containerEl.classList.add("drag-right");
+  } else {
+    messageEl.classList.add("inText");
+  }
 
-	let timeEl = document.createElement('span');
-	timeEl.classList.add('time');
+  let name = document.createElement("div");
+  name.classList.add("name");
+  name.innerText = userId;
 
-	const date = new Date(timestamp)
+  let textEl = document.createElement("span");
+  textEl.innerText = message;
 
-	timeEl.innerText = `${date.getHours()}:${date.getMinutes()}`;
+  let timeEl = document.createElement("span");
+  timeEl.classList.add("time");
 
-	chat.append(containerEl);
-	containerEl.append(messageEl);
-	messageEl.append(name, textEl, timeEl);
-};
+  const date = new Date(timestamp);
 
-connection.on('send-client-message', createOneMessage)
+  timeEl.innerText = `${date.getHours()}:${date.getMinutes()}`;
 
-let buttonEl = document.querySelector('.sendMessage');
-let messageInputEl = document.querySelector('.sentText');
+  chat.append(containerEl);
+  containerEl.append(messageEl);
+  messageEl.append(name, textEl, timeEl);
+}
 
-buttonEl.addEventListener('click', () => {
-	connection.emit('send-message', messageInputEl.value)
-	messageInputEl.value = ""
+connection.on("send-client-message", createOneMessage);
+
+let buttonEl = document.querySelector(".sendMessage");
+let messageInputEl = document.querySelector(".sentText");
+
+function sendMessage() {
+  connection.emit("send-message", { text: messageInputEl.value, image: "" });
+  messageInputEl.value = "";
+}
+
+buttonEl.addEventListener("click", () => {
+  sendMessage();
 });
 
-messageInputEl.addEventListener('keydown', (event) => {
-	if (event.key === 'Enter') {
-		connection.emit('send-message', messageInputEl.value)
-		messageInputEl.value = ""
-	}
+messageInputEl.addEventListener("keydown", event => {
+  if (event.key === "Enter") {
+    sendMessage();
+  }
 });
 
-connection.on('send-system-message', createSysMsg);
+connection.on("send-system-message", createSysMsg);
 
 function createMessageContainer() {
-	let containerEl = document.createElement('div')
-	containerEl.classList.add('messageContainer')
-	return containerEl
+  let containerEl = document.createElement("div");
+  containerEl.classList.add("messageContainer");
+  return containerEl;
 }
 
 function createSysMsg(text) {
-	let containerEl = createMessageContainer();
-	let sysMsgEl = document.createElement('div')
-	sysMsgEl.classList.add('systemMsg')
-	containerEl.append(sysMsgEl)
-	chat.append(containerEl)
-	sysMsgEl.innerText = text
+  let containerEl = createMessageContainer();
+  let sysMsgEl = document.createElement("div");
+  sysMsgEl.classList.add("systemMsg");
+  containerEl.append(sysMsgEl);
+  chat.append(containerEl);
+  sysMsgEl.innerText = text;
 }
-
