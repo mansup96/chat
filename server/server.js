@@ -3,10 +3,7 @@ const cors = require("cors");
 const fs = require("fs");
 
 const bodyParser = require("body-parser");
-
 const app = express();
-
-// создаем парсер для данных application/x-www-form-urlencoded
 const urlencodedParser = bodyParser.json();
 
 app.use(cors());
