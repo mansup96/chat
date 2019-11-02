@@ -11,6 +11,7 @@ connection.on("set-handshake", data => { localStorage.setItem("ID", data) });
 connection.on("send-messages-history", getHistory);
 
 let chat = document.querySelector('.chat');
+let fileInputEl = document.querySelector('.fileInput')
 
 // let iconEl = document.querySelector('svg')
 // iconEl.addEventListener('mouseenter', () => {
@@ -72,7 +73,7 @@ function createOneMessage(replica) {
 		top: chat.scrollHeight + 500,
 		behavior: 'instant'
 	});
-};
+}
 
 function isMyMessage(ID) {
 	let isMyMessage = false
@@ -113,7 +114,7 @@ function createMessage(userId, message, timestamp, isMyMessage) {
 	chat.append(containerEl);
 	containerEl.append(messageEl);
 	messageEl.append(name, textEl, timeEl);
-};
+}
 
 connection.on('send-client-message', createOneMessage)
 
@@ -123,6 +124,7 @@ let messageInputEl = document.querySelector('.sentText');
 buttonEl.addEventListener('click', () => {
 	connection.emit('send-message', messageInputEl.value)
 	messageInputEl.value = ""
+	showInfo()
 });
 
 messageInputEl.addEventListener('keydown', (event) => {
@@ -149,3 +151,11 @@ function createSysMsg(text) {
 	sysMsgEl.innerText = text
 }
 
+// дальше идет все. что каcается отправки картинки
+
+	console.log(fileInputEl.value);
+		
+
+function showInfo() {	
+	console.log(fileInputEl.files[0].size)
+}
