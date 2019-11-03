@@ -5,15 +5,21 @@
   "main": "server/chat.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server/chat.js"
+    "start": "node server/main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chalk": "^2.4.2",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-http-proxy": "^1.6.0",
+    "live-server": "^1.2.1",
     "multer": "^1.4.2",
+    "serve": "^11.2.0",
+    "serve-handler": "^6.1.2",
     "socket.io": "^2.3.0",
     "socketio-wildcard": "^2.0.0"
   }

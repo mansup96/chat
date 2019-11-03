@@ -1,12 +1,23 @@
+require('dotenv').config();
+
 const socket = require("socket.io");
 const express = require("express");
+const http = require("http");
 const middleware = require("socketio-wildcard")();
-var multer = require("multer");
+const multer = require("multer");
 const cors = require("cors");
+const path = require("path");
+const chalk = require("chalk");
+const fs = require('fs');
 
 const staticFilesRoute = "/static";
 const staticFilesDir = __dirname + "/uploads";
-const expressPort = 3001
+
+const expressPort = process.env.EXPRESS_PORT;
+
+if (!fs.existsSync(staticFilesDir)){
+    fs.mkdirSync(staticFilesDir);
+}
 
 const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -17,37 +28,39 @@ const storageConfig = multer.diskStorage({
   }
 });
 
-var upload = multer({ storage: storageConfig });
+var upload = multer({ storage: storageConfig, });
 
 const app = express();
+const server = http.Server(app);
+const io = socket(server);
 
+io.use(middleware);
 app.use(cors());
 app.use(staticFilesRoute, express.static(staticFilesDir));
 
+app.use("/", express.static(path.join(__dirname, "..", "client")));
+
+server.listen(expressPort, () => console.log(chalk.blue.bold(`Express is active on ${expressPort}`)));
+
 function getImageUrl(imageName) {
- return `${staticFilesRoute}/${imageName}`;
+  return `${staticFilesRoute}/${imageName}`;
 }
 
 app.post(
   "/photos/upload",
   upload.fields([{ name: "image", maxCount: "1" }]),
   function(req, res, next) {
-    if(req.files && req.files.image && req.files.image[0]) {
-			const imageUrl = getImageUrl(req.files.image[0].filename)
-			res.send({imageUrl});
-			
-			console.log(imageUrl)
-		}
-		else {
-			
-			res.sendStatus(403)
-		}
+    if (req.files && req.files.image && req.files.image[0]) {
+      const imageUrl = getImageUrl(req.files.image[0].filename);
+      res.send({ imageUrl });
+
+      console.log(imageUrl);
+    } else {
+      res.sendStatus(403);
+    }
     // req.body will contain the text fields, if there were any
   }
 );
-
-const io = socket.listen(3000);
-io.use(middleware);
 
 const clientCommands = {
   setName: "set-name",
@@ -173,4 +186,3 @@ function handleConnection(connection) {
   connection.on(clientCommands.sendMessage, onSendMessage);
 }
 
-app.listen(expressPort, () => console.log("Express is active"));
