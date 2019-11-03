@@ -106,7 +106,7 @@ body {
 	margin: 0 20px;
 	border-radius: 5px;
 	font-size: 13px;
-	max-width: 450px;
+	max-width: 350px;
 	word-break: break-all;
 }
 
@@ -240,6 +240,7 @@ input[type=file] {
 }
 
 .badge {
+	margin-left: 20px;
 	height: 30px;
 	background-color: #49498c;
 	border-radius: 10px;
@@ -256,16 +257,18 @@ input[type=file] {
 }
 
 .badge_opacity_0 {
-	visibility: hidden;
+	display: none;
 }
 
 .imgInfo {
+	overflow: hidden;
+	max-width: 100px;
 	padding: 0 5px 0 5px;
 	font-size: 12px;
 }
 
 .imgSize {
-	max-width: 300px
+	max-width: 100%
 }
 
 .FormFile {

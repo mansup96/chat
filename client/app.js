@@ -217,7 +217,6 @@ fileInputEl.addEventListener("change", () => {
 		messageInputEl.focus()
 		imgInfoEl.innerText = fileInputEl.files[0].name
 		badgeEl.classList.remove('badge_opacity_0')
-
 	}
 });
 
