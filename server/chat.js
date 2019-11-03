@@ -1,5 +1,50 @@
 const socket = require("socket.io");
+const express = require("express");
 const middleware = require("socketio-wildcard")();
+var multer = require("multer");
+const cors = require("cors");
+
+const staticFilesRoute = "/static";
+const staticFilesDir = __dirname + "/uploads";
+const expressPort = 3001
+
+const storageConfig = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, staticFilesDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}${file.originalname}`);
+  }
+});
+
+var upload = multer({ storage: storageConfig });
+
+const app = express();
+
+app.use(cors());
+app.use(staticFilesRoute, express.static(staticFilesDir));
+
+function getImageUrl(imageName) {
+ return `${staticFilesRoute}/${imageName}`;
+}
+
+app.post(
+  "/photos/upload",
+  upload.fields([{ name: "image", maxCount: "1" }]),
+  function(req, res, next) {
+    if(req.files && req.files.image && req.files.image[0]) {
+			const imageUrl = getImageUrl(req.files.image[0].filename)
+			res.send({imageUrl});
+			
+			console.log(imageUrl)
+		}
+		else {
+			
+			res.sendStatus(403)
+		}
+    // req.body will contain the text fields, if there were any
+  }
+);
 
 const io = socket.listen(3000);
 io.use(middleware);
@@ -29,12 +74,13 @@ let users = {};
 
 io.on("connect", handleConnection);
 
-function addMessage(userId, text) {
+function addMessage(userId, { text, imageUrl }) {
   const timestamp = Date.now();
 
   const message = {
     userId,
     message: text,
+    imageUrl,
     timestamp
   };
 
@@ -99,7 +145,7 @@ function handleSetName(name) {
   );
 }
 
-function handleSendMessage(messageText) {
+function handleSendMessage({ text, imageUrl }) {
   const { handshakeid } = this;
 
   if (!this.handshakeid) {
@@ -108,7 +154,7 @@ function handleSendMessage(messageText) {
     return;
   }
 
-  const message = addMessage(handshakeid, messageText);
+  const message = addMessage(handshakeid, { text, imageUrl });
 
   io.emit(serverCommands.sendClientMessage, message);
 }
@@ -126,3 +172,5 @@ function handleConnection(connection) {
 
   connection.on(clientCommands.sendMessage, onSendMessage);
 }
+
+app.listen(expressPort, () => console.log("Express is active"));
