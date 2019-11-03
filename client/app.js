@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-let connection = new io("http://192.168.0.6:3000");
+let connection = new io();
 
 connection.on("server-error", data => {
 	console.log(data);
@@ -128,9 +128,7 @@ function createMessage(userId, message, timestamp, isMyMessage, imageUrl) {
 		let divImg = document.createElement("div")
 		const image = document.createElement("img");
 		image.classList.add('imgSize')
-
-		const url = `http://${window.location.hostname}:3001${imageUrl}`
-		image.src = url;
+		image.src = imageUrl;
 		messageEl.append(divImg);
 		divImg.append(image)
 	}
@@ -171,7 +169,7 @@ function postImg() {
 	const xhr = new XMLHttpRequest();
 	let formData = new FormData;
 	formData.append('image', fileInputEl.files[0])
-	xhr.open('POST', `http://${window.location.hostname}:3001/photos/upload`)
+	xhr.open('POST', `/photos/upload`)
 	xhr.send(formData)
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4) {
