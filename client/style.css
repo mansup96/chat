@@ -52,6 +52,7 @@ body {
 	margin: 0 auto 0 auto;
 	box-sizing: border-box;
 	display: flex;
+	align-items: center;
 }
 
 .messageInput {
@@ -191,7 +192,7 @@ body {
 
 .form-group {
 	padding: 0;
-	margin: 10px 10px 0 0;
+	margin-right: 10px;
 	width: 10px;
 }
 
@@ -235,4 +236,20 @@ input[type=file] {
 
 .label:hover i, .label:hover .title {
 	color: rgb(190, 190, 190);
+}
+
+.badge {
+	height: 30px;
+	border: 1px solid black;
+	border-radius: 10px;
+	display: flex;
+	align-items: center;
+}
+.badge_opacity_0 {
+	opacity: 0
+}
+
+.imgInfo {
+	padding: 0 5px 0 5px;
+	font-size: 12px;
 }
