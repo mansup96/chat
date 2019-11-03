@@ -166,6 +166,7 @@ buttonEl.addEventListener("click", () => {
 	}
 });
 
+
 function postImg() {
 	const xhr = new XMLHttpRequest();
 	let formData = new FormData;
