@@ -24,8 +24,8 @@ const app = express();
 app.use(cors());
 app.use(staticFilesRoute, express.static(staticFilesDir));
 
-function getImageUrl(hostname, imageName) {
- return `http://${hostname}:${expressPort}${staticFilesRoute}/${imageName}`;
+function getImageUrl(imageName) {
+ return `${staticFilesRoute}/${imageName}`;
 }
 
 app.post(
@@ -33,9 +33,15 @@ app.post(
   upload.fields([{ name: "image", maxCount: "1" }]),
   function(req, res, next) {
     if(req.files && req.files.image && req.files.image[0]) {
-      res.send({imageUrl: getImageUrl(req.hostname, req.files.image[0].filename)});
-    }
-    res.send(403)
+			const imageUrl = getImageUrl(req.files.image[0].filename)
+			res.send({imageUrl});
+			
+			console.log(imageUrl)
+		}
+		else {
+			
+			res.sendStatus(403)
+		}
     // req.body will contain the text fields, if there were any
   }
 );
