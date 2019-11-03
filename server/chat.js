@@ -2,6 +2,7 @@ const socket = require("socket.io");
 const express = require("express");
 const middleware = require("socketio-wildcard")();
 var multer = require("multer");
+const cors = require("cors");
 
 const staticFilesRoute = "/static";
 const staticFilesDir = __dirname + "/uploads";
@@ -20,6 +21,7 @@ var upload = multer({ storage: storageConfig });
 
 const app = express();
 
+app.use(cors());
 app.use(staticFilesRoute, express.static(staticFilesDir));
 
 function getImageUrl(hostname, imageName) {
