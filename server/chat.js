@@ -8,11 +8,16 @@ const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
 const chalk = require("chalk");
+const fs = require('fs');
 
 const staticFilesRoute = "/static";
 const staticFilesDir = __dirname + "/uploads";
 
 const expressPort = process.env.EXPRESS_PORT;
+
+if (!fs.existsSync(staticFilesDir)){
+    fs.mkdirSync(staticFilesDir);
+}
 
 const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -23,7 +28,7 @@ const storageConfig = multer.diskStorage({
   }
 });
 
-var upload = multer({ storage: storageConfig });
+var upload = multer({ storage: storageConfig, });
 
 const app = express();
 const server = http.Server(app);
