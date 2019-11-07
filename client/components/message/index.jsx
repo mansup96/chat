@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import style from './style.css'
 
 const isMyMessage = ID => ID === localStorage.getItem('ID')
 
@@ -31,6 +32,9 @@ class Message extends React.PureComponent {
 
     return (
       <div className={msgContClass}>
+        <div className={style.huita}>
+          fa
+        </div>
         <div className={msgclass}>
           <div className="name">{userId}</div>
           {imageUrl ? (
