@@ -1,11 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-function SystemMsg({message}) {
-	return (
-		<div className="messageContainer">
-			<div className="systemMsg">{message}</div>
-		</div>
-	)
+function SystemMsg({ message }) {
+  return (
+    <div className="messageContainer">
+      <div className="systemMsg">{message}</div>
+    </div>
+  )
 }
 
-export default SystemMsg;
+SystemMsg.propTypes = {
+  message: PropTypes.string.isRequired,
+}
+
+export default SystemMsg

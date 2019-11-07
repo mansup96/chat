@@ -1,5 +1,5 @@
-import io from 'socket.io-client';
+import Io from 'socket.io-client'
 
-const connection = new io('http://localhost:3001');
+const connection = new Io('http://localhost:3001')
 
-export default connection;
+export default connection
