@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-console */
 require('dotenv').config()
 
 const socket = require('socket.io')
@@ -10,10 +12,13 @@ const path = require('path')
 const chalk = require('chalk')
 const fs = require('fs')
 const mongoose = require('mongoose')
+
 const { MessageSchema, UserSchema } = require('./schemas')
 
+const { clientCommands, serverCommands, errors } = require('./commands')
+
 const staticFilesRoute = '/static'
-const staticFilesDir = __dirname + '/uploads'
+const staticFilesDir = path.join(__dirname, '..', 'uploads')
 
 const expressPort = process.env.EXPRESS_PORT
 const mongoPort = process.env.MONGO_PORT
@@ -31,7 +36,7 @@ const storageConfig = multer.diskStorage({
   },
 })
 
-var upload = multer({ storage: storageConfig })
+const upload = multer({ storage: storageConfig })
 
 const app = express()
 const server = http.Server(app)
@@ -44,7 +49,7 @@ mongoose
     useUnifiedTopology: true,
     connectTimeoutMS: 203,
   })
-  .then(ere => {
+  .then(() => {
     console.log(chalk.green('Connected to db'))
   })
   .catch(error => {
@@ -59,9 +64,7 @@ app.use(staticFilesRoute, express.static(staticFilesDir))
 
 app.use('/', express.static(path.join(__dirname, '..', 'client')))
 
-server.listen(expressPort, () =>
-  console.log(chalk.blue.bold(`Express is active on ${expressPort}`))
-)
+server.listen(expressPort, () => console.log(chalk.blue.bold(`Express is active on ${expressPort}`)),)
 
 function getImageUrl(imageName) {
   return `${staticFilesRoute}/${imageName}`
@@ -70,43 +73,15 @@ function getImageUrl(imageName) {
 app.post(
   '/photos/upload',
   upload.fields([{ name: 'image', maxCount: '1' }]),
-  function(req, res, next) {
+  (req, res) => {
     if (req.files && req.files.image && req.files.image[0]) {
       const imageUrl = getImageUrl(req.files.image[0].filename)
       res.send({ imageUrl })
-
-      console.log(imageUrl)
     } else {
       res.sendStatus(403)
     }
-    // req.body will contain the text fields, if there were any
-  }
+  },
 )
-
-const clientCommands = {
-  setName: 'set-name',
-  sendMessage: 'send-message',
-  sendHandshake: 'send-handshake',
-}
-
-const serverCommands = {
-  userSetName: 'user-set-name',
-  sendSystemMessage: 'send-system-message',
-  sendClientMessage: 'send-client-message',
-  error: 'server-error',
-  sendMessagesHistory: 'send-messages-history',
-  setHandshake: 'set-handshake',
-}
-
-const errors = {
-  NO_HANDSHAKE: 'NO_HANDSHAKE',
-}
-
-const messages = []
-
-let users = {}
-
-io.on('connect', handleConnection)
 
 function createMessage({ userId, text, imageUrl, isSystem }) {
   const timestamp = Date.now()
@@ -124,21 +99,16 @@ function createMessage({ userId, text, imageUrl, isSystem }) {
 }
 
 function addMessage({ userId, text, imageUrl, isSystem = false }) {
+  console.log('sdfsd')
   return new Promise((resolve, reject) => {
     createMessage({ userId, text, isSystem, imageUrl }).save(
       (err, document) => {
         if (err) reject(err)
 
         resolve(document)
-      }
+      },
     )
   })
-}
-
-function createUser(name) {
-  return {
-    name,
-  }
 }
 
 function addUser(_id) {
@@ -154,29 +124,8 @@ function setName(_id, name) {
   })
 }
 
-function handleHandshake(handshake) {
-  if (!handshake) {
-    addUser(this.id)
-
-    this.emit(serverCommands.setHandshake, this.id)
-
-    this.handshakeid = this.id
-  } else {
-    this.handshakeid = handshake
-    if (!users[handshake]) {
-      addUser(handshake)
-    }
-  }
-
-  this.emit(serverCommands.sendMessagesHistory, messages)
-  io.emit(
-    serverCommands.sendSystemMessage,
-    `${users[this.handshakeid].name} has connected`
-  )
-}
-
-async function sendSystemMessageToAll(msg, save = false) {
-  const message = createMessage(null, { text: 'fsds' }, true)
+async function sendSystemMessageToAll(text) {
+  const message = createMessage({ text, isSystem: true })
 
   io.emit(serverCommands.sendClientMessage, message)
 }
@@ -194,7 +143,7 @@ function handleSetName(name) {
     setName(handshakeid, name)
     io.emit(serverCommands.userSetName, { id: handshakeid, name })
     sendSystemMessageToAll(
-      `${prevUser.name || prevUser.id} changed name to ${name}`
+      `${prevUser.name || prevUser.id} changed name to ${name}`,
     )
   })
 }
@@ -222,7 +171,6 @@ async function handleHandshake(handshake) {
   MessageSchema.find()
     .populate('user')
     .exec((err, res) => {
-      console.log(res)
       this.emit(serverCommands.sendMessagesHistory, res)
     })
 
@@ -246,7 +194,7 @@ async function handleSendMessage({ text, imageUrl }) {
     return
   }
 
-  if (!text) return
+  if (!text && !imageUrl) return
 
   const message = await addMessage({ userId: handshakeid, text, imageUrl })
 
@@ -270,3 +218,5 @@ function handleConnection(connection) {
 
   connection.on(clientCommands.sendMessage, onSendMessage)
 }
+
+io.on('connect', handleConnection)

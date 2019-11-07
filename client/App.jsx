@@ -3,13 +3,10 @@ import Message from './components/message'
 import MessageSendBar from './components/messageSendBar'
 import ModalWindow from './components/modalWindow'
 import SystemMsg from './components/systemMsg'
-// import TestComponent from './components/testComponent';
 
 import connection from './network/connection'
 
 class Application extends PureComponent {
-  mounted = false
-
   myRef = React.createRef()
 
   state = {
@@ -66,35 +63,33 @@ class Application extends PureComponent {
 
   render() {
     return (
-      <>
-        <div className="container">
-          <ModalWindow />
-          <div className="chat" ref={this.myRef}>
-            {this.state.messages.map(message => {
-              if (message.isSystem) {
-                return (
-                  <SystemMsg
-                    key={`${message.timestamp}`}
-                    message={message.message}
-                  />
-                )
-              }
-
+      <div className="container">
+        <ModalWindow />
+        <div className="chat" ref={this.myRef}>
+          {this.state.messages.map(message => {
+            if (message.isSystem) {
               return (
-                <Message
-                  key={message.timestamp}
+                <SystemMsg
+                  key={`${message.timestamp}`}
                   message={message.message}
-                  imageUrl={message.imageUrl}
-                  userId={message.userId}
-                  timestamp={message.timestamp}
-                  messageDidRender={this.messageDidRender}
                 />
               )
-            })}
-          </div>
-          <MessageSendBar />
+            }
+
+            return (
+              <Message
+                key={message.timestamp}
+                message={message.message}
+                imageUrl={message.imageUrl}
+                user={message.user}
+                timestamp={message.timestamp}
+                messageDidRender={this.messageDidRender}
+              />
+            )
+          })}
         </div>
-      </>
+        <MessageSendBar />
+      </div>
     )
   }
 }
