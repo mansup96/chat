@@ -8,28 +8,47 @@ function isMyMessage(ID) {
 	return isMyMessage;
 }
 
-function Message({ userId, message, imgUrl, timestamp }) {
-	let msgclass = 'message';
-	let msgContClass = 'messageContainer' 
+class Message extends React.PureComponent {
 
-	if (isMyMessage(userId)) {
-		msgContClass = msgContClass + ' drag-right';
-		msgclass = msgclass + ' outText';
-	}
-	else {
-		msgclass = msgclass + ' inText';
+	componentDidMount() {
+		this.props.messageDidRender()
 	}
 
-	return (
-		<div className={msgContClass}>
-			<div className={msgclass}>
-				<div className="name">{userId}</div>
-				<img className="imgSize" src={imgUrl}></img>
-				<span>{message}</span>
-				<span className="time">{timestamp}</span>
+	handleImageLoaded = () => {
+		this.props.messageDidRender()
+	}
+
+	render() {
+		const { userId, message, imageUrl, timestamp } = this.props
+		let msgclass = 'message';
+		let msgContClass = 'messageContainer'
+
+		if (isMyMessage(userId)) {
+			msgContClass = msgContClass + ' drag-right';
+			msgclass = msgclass + ' outText';
+		}
+		else {
+			msgclass = msgclass + ' inText';
+		}
+
+		const date = new Date(timestamp);
+
+		const time = `${date.getHours()}:${date.getMinutes()}`;
+
+		return (
+			<div className={msgContClass}>
+				<div className={msgclass}>
+					<div className="name">{userId}</div>
+					{imageUrl ? <img 
+					onLoad={this.handleImageLoaded}
+					className="imgSize"
+						src={'http://localhost:3001' + imageUrl}></img> : null}
+					<span>{message}</span>
+					<span className="time">{time}</span>
+				</div>
 			</div>
-		</div>
-	)
+		)
+	}
 }
 
 export default Message;

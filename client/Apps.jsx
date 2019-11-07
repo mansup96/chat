@@ -3,10 +3,14 @@ import Message from './components/message';
 import MessageSendBar from './components/messageSendBar';
 import ModalWindow from './components/modalWindow';
 import SystemMsg from './components/systemMsg';
+// import TestComponent from './components/testComponent';
+
 import connection from './network/connection'
 
-
 class Application extends PureComponent {
+	mounted = false
+	myRef = React.createRef();
+
 	state = {
 		messages: []
 	}
@@ -16,17 +20,29 @@ class Application extends PureComponent {
 		const messages = Array.from(this.state.messages)
 		messages.push(data);
 
-		this.setState({ messages });
+		this.setState({ messages }, () => {
+		});
 	}
 
 	addClientMessage = (data) => {
-		data.isMyMsg = isMyMessage(data.userId)
 		this.addMessage(data);
-		debugger
+	}
+
+	scrollToBottom = () => {
+		if (this.myRef.current) {
+			this.myRef.current.scroll({
+				top: this.myRef.current.scrollHeight + 500,
+				behavior: "instant"
+			})
+		}
+	}
+
+	messageDidRender = () => {
+		this.scrollToBottom()
 	}
 
 	addSystemMessage = (message) => {
-		this.addMessage({message, isSystem: true})
+		this.addMessage({ message, isSystem: true })
 	}
 
 	getHistory = (messages) => {
@@ -52,14 +68,15 @@ class Application extends PureComponent {
 		return (
 			<React.Fragment>
 				<div className="container">
-					<button onClick={this.send}>dwqdqw</button>
 					<ModalWindow />
-					<div className="chat">
+					<div className="chat"
+						ref={this.myRef}>
 						{this.state.messages.map((message, key) => {
 							if (message.isSystem) {
 								return <SystemMsg key={key} {...message} />
 							}
-							return <Message key={key} {...message} />
+
+							return <Message key={key} {...message} messageDidRender={this.messageDidRender} />
 						})}
 					</div>
 					<MessageSendBar />
