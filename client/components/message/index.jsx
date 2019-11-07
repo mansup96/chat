@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react'
 import PropTypes from 'prop-types'
 
@@ -13,12 +14,12 @@ class Message extends React.PureComponent {
   }
 
   render() {
-    const { userId, message, imageUrl, timestamp } = this.props
+    const { user, message, imageUrl, timestamp } = this.props
 
     let msgclass = 'message'
     let msgContClass = 'messageContainer'
 
-    if (isMyMessage(userId)) {
+    if (user && isMyMessage(user._id)) {
       msgContClass += ' drag-right'
       msgclass += ' outText'
     } else {
@@ -32,7 +33,7 @@ class Message extends React.PureComponent {
     return (
       <div className={msgContClass}>
         <div className={msgclass}>
-          <div className="name">{userId}</div>
+          <div className="name">{user._id}</div>
           {imageUrl ? (
             <img
               alt="Message dggd"
@@ -51,7 +52,9 @@ class Message extends React.PureComponent {
 
 Message.propTypes = {
   message: PropTypes.string.isRequired,
-  userId: PropTypes.string.isRequired,
+  user: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+  }),
   timestamp: PropTypes.number.isRequired,
   imageUrl: PropTypes.string,
   messageDidRender: PropTypes.func.isRequired,
@@ -59,6 +62,9 @@ Message.propTypes = {
 
 Message.defaultProps = {
   imageUrl: null,
+  user: {
+    _id: null,
+  },
 }
 
 export default Message

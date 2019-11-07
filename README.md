@@ -1,6 +1,8 @@
 ### Installation
 
-Сервер требует [Node.js](https://nodejs.org/) v10+ для запуска.
+Сервер требует 
+- [Node.js](https://nodejs.org/) v10+ для запуска.
+- Наличия установленного mongodb на хостовой машине. [Скачать mongodb 4.2.1](mongodb.com/dr/fastdl.mongodb.org/win32/mongodb-win32-x86_64-2012plus-4.2.1-signed.msi/download)
 
 Склонируйте репозиторий, установите зависимости и запустите
 
