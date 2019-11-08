@@ -59,11 +59,12 @@
   letter-spacing: 1px;
   font-weight: 450;
   opacity: 1;
-	z-index: 1;
-	position: relative;
+  z-index: 1;
+  position: absolute;
 }
 
 .titleFlight {
+  left: 0;
   opacity: 0;
   z-index: 0;
   animation: titleFlight var(--main-anim-time) ease-out;
@@ -71,23 +72,25 @@
 
 @keyframes titleFlight {
   from {
-	z-index: 1;
-	opacity: 1;
+    left: 80px;
+    z-index: 1;
+    opacity: 1;
   }
   to {
-		z-index: 0;
+		left: 0;
+    z-index: 0;
     opacity: 0;
   }
 }
 
 .login {
   opacity: 0;
-	z-index: 0;
-	position: absolute;
+  z-index: 0;
+  position: relative;
 }
 
 .loginFlight {
-	left: 0;
+  left: -90px;
   opacity: 1;
   z-index: 1;
   animation: loginFlight var(--main-anim-time) ease-in;
@@ -95,12 +98,12 @@
 
 @keyframes loginFlight {
   from {
-		left: 50px;
+    left: -35px;
     opacity: 0;
     z-index: 0;
   }
   to {
-		left: 0;
+    left: -90px;
     opacity: 1;
     z-index: 1;
   }
