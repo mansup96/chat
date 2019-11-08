@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import Message from './components/message'
 import MessageSendBar from './components/messageSendBar'
-import ModalWindow from './components/modalWindow'
+import WelcomePage from './components/welcomePage'
 import SystemMsg from './components/systemMsg'
 
 import connection from './network/connection'
@@ -64,7 +64,7 @@ class Application extends PureComponent {
   render() {
     return (
       <div className="container">
-        <ModalWindow />
+        <WelcomePage />
         <div className="chat" ref={this.myRef}>
           {this.state.messages.map(message => {
             if (message.isSystem) {
@@ -75,7 +75,6 @@ class Application extends PureComponent {
                 />
               )
             }
-
             return (
               <Message
                 key={message.timestamp}
