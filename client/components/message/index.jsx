@@ -33,9 +33,6 @@ class Message extends React.PureComponent {
 
     return (
       <div className={msgContClass}>
-        <div className={style.huita}>
-          fa
-        </div>
         <div className={msgclass}>
           <div className="name">{user._id}</div>
           {imageUrl ? (
