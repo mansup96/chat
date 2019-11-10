@@ -2,6 +2,8 @@ import React from 'react'
 import cn from 'classnames'
 import style from './style.css'
 import paperPlane from '../../resources/images/plane.png'
+import StartButton from '../startButton'
+import LoginInputs from '../loginInputs'
 
 class WelcomePage extends React.PureComponent {
   state = {
@@ -9,7 +11,11 @@ class WelcomePage extends React.PureComponent {
   }
 
   flyAway = () => {
-    this.setState({ flyAction: true })
+    if (this.state.flyAction === false) {
+      this.setState({ flyAction: true })
+    } else {
+      this.setState({ flyAction: false })
+    }
   }
 
   render() {
@@ -53,20 +59,21 @@ class WelcomePage extends React.PureComponent {
                   [style.loginFlight]: this.state.flyAction,
                 })}
               >
-                Привет, епта!
+                Ваш логин и пароль
               </h1>
             </div>
-            <div className={cn(style.description)}>
+            <div
+              className={cn(style.description, {
+                [style.descriptionFlight]: this.state.flyAction,
+              })}
+            >
               Добро пожаловать в Telegram Killer.
               <br /> Быстрейший и безопаснейший клиент.
             </div>
-            <button
-              type="button"
-              onClick={this.flyAway}
-              className={style.startButton}
-            >
-              {buttonCont}
-            </button>
+            <form noValidate>
+              {this.state.flyAction ? <LoginInputs /> : null}
+              <StartButton content={buttonCont} onClick={this.flyAway} />
+            </form>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 :root {
-  --main-anim-time: 0.5s;
+  --main-anim-time: 0.6s;
 }
 
 .modal {
@@ -61,6 +61,7 @@
   opacity: 1;
   z-index: 1;
   position: absolute;
+  left: 80px;
 }
 
 .titleFlight {
@@ -77,7 +78,7 @@
     opacity: 1;
   }
   to {
-		left: 0;
+    left: 0;
     z-index: 0;
     opacity: 0;
   }
@@ -87,10 +88,11 @@
   opacity: 0;
   z-index: 0;
   position: relative;
+  font-size: 18px;
 }
 
 .loginFlight {
-  left: -90px;
+  left: -65px;
   opacity: 1;
   z-index: 1;
   animation: loginFlight var(--main-anim-time) ease-in;
@@ -103,13 +105,15 @@
     z-index: 0;
   }
   to {
-    left: -90px;
+    left: -65px;
     opacity: 1;
     z-index: 1;
   }
 }
 
 .changeHeading {
+  box-sizing: border-box;
+  text-align: center;
 }
 
 .description {
@@ -117,6 +121,24 @@
   line-height: 22px;
   font-size: 15px;
   color: #888888;
+}
+
+.descriptionFlight {
+	z-index: -1;
+	height: 0;
+	opacity: 0;
+	animation: descriptionFlight var(--main-anim-time) ease-in;
+}
+
+@keyframes descriptionFlight {
+	from {
+		height: 44px;
+		opacity: 1;
+	}
+	to {
+		height: 0;
+		opacity: 0;
+	}
 }
 
 .modalContent {
@@ -169,20 +191,4 @@
 
 .displayNone {
   display: none;
-}
-
-.startButton {
-  width: 320px;
-  height: 55px;
-  font-size: 18px;
-  background-color: #4679e0;
-  border: 0;
-  border-radius: 5px;
-  text-transform: uppercase;
-  color: white;
-  margin-top: 50px;
-}
-
-.startButton:hover {
-  background-color: #7796d4;
 }
