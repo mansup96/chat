@@ -6,7 +6,21 @@ import style from './style.css'
 
 class LoginInputs extends React.PureComponent {
   logLine = React.createRef()
+
   passLine = React.createRef()
+
+  state = {
+    passInput: '',
+    passLength: true,
+  }
+
+  passValid = event => {
+    const trimmed = event.target.value.trim()
+    this.setState({ passInput: trimmed })
+    if (this.props.flyAction && trimmed && event.target.value.length < 6) {
+      this.setState({ passLength: false })
+    }
+  }
 
   shrinkLogLine = () => {
     this.logLine.current.classList.add(style.shrinkLine)
@@ -46,12 +60,15 @@ class LoginInputs extends React.PureComponent {
           placeholder="Password"
           onClick={this.shrinkPassLine}
           onBlur={this.blurPassLine}
+          onChange={this.passValid}
+          value={this.state.passInput}
         />
         <div className={cn(style.passUnderline)}>
           <div className={cn(style.lineContainer)}>
             <div ref={this.passLine} className={cn(style.line)}></div>
           </div>
         </div>
+        {this.state.passLength === false ? <div>Пароль должен содержать больше 6 символов</div> : null}
       </div>
     )
   }

@@ -8,7 +8,7 @@ import LoginInputs from '../loginInputs'
 class WelcomePage extends React.PureComponent {
   state = {
     flyAction: false,
-  }
+	}
 
   flyAway = () => {
     if (this.state.flyAction === false) {
@@ -71,7 +71,18 @@ class WelcomePage extends React.PureComponent {
               <br /> Быстрейший и безопаснейший клиент.
             </div>
             <form noValidate>
-              {this.state.flyAction ? <LoginInputs /> : null}
+              <div
+                className={cn(style.formClass, {
+                  [style.inputsAnim]: this.state.flyAction,
+                })}
+              >
+                {this.state.flyAction ? (
+                  <LoginInputs
+                    onClick={this.inputsAction}
+                    flyAction={this.state.flyAction}
+                  />
+                ) : null}
+              </div>
               <StartButton content={buttonCont} onClick={this.flyAway} />
             </form>
           </div>

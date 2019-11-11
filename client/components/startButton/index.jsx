@@ -51,4 +51,6 @@ class StartButton extends React.PureComponent {
     )
   }
 }
+
+
 export default StartButton
