@@ -6,8 +6,9 @@ const isMyMessage = ID => ID === localStorage.getItem('ID')
 
 class Message extends React.PureComponent {
   componentDidMount() {
-    this.props.messageDidRender()
-  }
+		this.props.messageDidRender()
+	}
+
 
   handleImageLoaded = () => {
     this.props.messageDidRender()

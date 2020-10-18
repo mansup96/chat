@@ -8,13 +8,25 @@ module.exports = {
     filename: 'bundlick.js',
   },
   resolve: {
-    extensions: ['.css', '.wasm', '.mjs', '.js', '.json', '.jsx'],
+    extensions: [
+      '.css',
+      '.wasm',
+      '.mjs',
+      '.js',
+      '.json',
+      '.jsx',
+      '.ts',
+      '.tsx',
+    ],
   },
   devServer: {
     contentBase: './client/public',
   },
+  devtool: 'sourca-map',
   module: {
     rules: [
+      { test: /\.tsx?$/, loader: 'ts-loader' },
+      { test: /\.js$/, loader: 'source-map-loader' },
       {
         test: /\.(js|jsx|mjs)$/,
         enforce: 'pre',
