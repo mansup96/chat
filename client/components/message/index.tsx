@@ -1,35 +1,34 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-const isMyMessage = ID => ID === localStorage.getItem('ID')
+const isMyMessage = ID => ID === localStorage.getItem('ID');
 
 class Message extends React.PureComponent {
   componentDidMount() {
-		this.props.messageDidRender()
-	}
-
-
-  handleImageLoaded = () => {
-    this.props.messageDidRender()
+    this.props.messageDidRender();
   }
 
-  render() {
-    const { user, message, imageUrl, timestamp } = this.props
+  handleImageLoaded = () => {
+    this.props.messageDidRender();
+  };
 
-    let msgclass = 'message'
-    let msgContClass = 'messageContainer'
+  render() {
+    const { user, message, imageUrl, timestamp } = this.props;
+
+    let msgclass = 'message';
+    let msgContClass = 'messageContainer';
 
     if (user && isMyMessage(user._id)) {
-      msgContClass += ' drag-right'
-      msgclass += ' outText'
+      msgContClass += ' drag-right';
+      msgclass += ' outText';
     } else {
-      msgclass += ' inText'
+      msgclass += ' inText';
     }
 
-    const date = new Date(timestamp)
+    const date = new Date(timestamp);
 
-    const time = `${date.getHours()}:${date.getMinutes()}`
+    const time = `${date.getHours()}:${date.getMinutes()}`;
 
     return (
       <div className={msgContClass}>
@@ -47,7 +46,7 @@ class Message extends React.PureComponent {
           <span className="time">{time}</span>
         </div>
       </div>
-    )
+    );
   }
 }
 
@@ -59,13 +58,13 @@ Message.propTypes = {
   timestamp: PropTypes.number.isRequired,
   imageUrl: PropTypes.string,
   messageDidRender: PropTypes.func.isRequired,
-}
+};
 
 Message.defaultProps = {
   imageUrl: null,
   user: {
     _id: null,
   },
-}
+};
 
-export default Message
+export default Message;

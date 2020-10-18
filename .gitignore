@@ -1,5 +1,4 @@
 node_modules
 server/uploads
 .vscode/*
-client/public/*.js
-client/public/*.js.map
+client/build/

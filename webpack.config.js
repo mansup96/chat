@@ -4,7 +4,7 @@ module.exports = {
   mode: 'development',
   entry: './client/index.jsx',
   output: {
-    path: path.resolve(__dirname, 'client/public'),
+    path: path.resolve(__dirname, 'client/build'),
     filename: 'bundlick.js',
   },
   resolve: {
